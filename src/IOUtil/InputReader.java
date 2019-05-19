@@ -1,14 +1,11 @@
 package IOUtil;
 
-import produceInfo.ProduceInfo;
+import order.Order;
+import order.Orders;
 
-import java.beans.PropertyDescriptor;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import static org.junit.Assert.*;
 
 public class InputReader {
     public static void readFile(String filepath) {
@@ -35,25 +32,26 @@ public class InputReader {
             String[] temp;
             while((line = bufferedReader.readLine())!=null){
                 if(line.contains("instance")) {
-                    ProduceInfo produceInfo = new ProduceInfo();
-                    produceInfo.instanceName = line;
+                    Order order = new Order();
+                    order.instanceName = line;
                     line = bufferedReader.readLine();
                     temp = line.split("\\s+");
                     //assertEquals(2, temp.length);
-                    produceInfo.machineCount = Integer.valueOf(temp[0]);
-                    produceInfo.partCount = Integer.valueOf(temp[1]);
-                    //System.out.println(ProduceInfo.machineCount + "  " + ProduceInfo.partCount);
+                    order.machineCount = Integer.valueOf(temp[0]);
+                    order.partCount = Integer.valueOf(temp[1]);
+                    //System.out.println(Order.machineCount + "  " + Order.partCount);
 
-                    for (int i = 0; i < produceInfo.machineCount; i++) {
+                    for (int i = 0; i < order.machineCount; i++) {
                         ArrayList<Integer> list = new ArrayList<>();
                         line = bufferedReader.readLine();
                         temp = line.split("\\s+");
-                        for (int j = 1; j < 2 * produceInfo.partCount; j += 2) {
+                        for (int j = 1; j < 2 * order.partCount; j += 2) {
                             list.add(Integer.valueOf(temp[j]));
                         }
                         //System.out.println(list);
-                        produceInfo.produceInfo.add(list);
+                        order.produceInfo.add(list);
                     }
+                    Orders.orders.add(order);
                 }
             }
 
