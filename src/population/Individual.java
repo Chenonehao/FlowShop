@@ -14,6 +14,8 @@ public class Individual {
 
     public int timeCost;
 
+    public double selectProb;
+
     public Individual(Order order) {
         geneticInfo= new ArrayList<>();
         for(int i=0;i<order.machineCount;i++){
@@ -30,12 +32,20 @@ public class Individual {
         }
     }
 
-    public void calculateTimeCost(Order order){
+    public void updateGeneticInfo(ArrayList<ArrayList<Integer>> newGene){
+        for(int i=0;i<geneticInfo.size();i++)
+            for(int j=0;j<geneticInfo.get(0).size();j++){
+                geneticInfo.get(i).set(j,newGene.get(i).get(j));
+            }
+    }
+
+    public int calculateTimeCost(Order order){
         for(int i=0;i<order.machineCount;i++){
             Machine machine = Machines.machines.get(i);
             machine.process(geneticInfo.get(i));
         }
-        System.out.println(geneticInfo.get(0));
-        System.out.println(Machines.machines.get(order.machineCount-1).currentTime);
+        //System.out.println(geneticInfo.get(0));
+        //System.out.println(Machines.machines.get(order.machineCount-1).currentTime);
+        return Machines.machines.get(order.machineCount-1).currentTime;
     }
 }

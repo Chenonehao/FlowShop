@@ -26,6 +26,7 @@ public class GA {
         Parts.initParts(order);
         while(population.generation<1){
             population.computeFitness(order);
+            population.select(order);
             population.cross();
             population.mutate();
             population.generation++;
