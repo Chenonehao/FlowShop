@@ -5,6 +5,8 @@ import population.Population;
 import produce.Machines;
 import produce.Parts;
 
+import java.util.ArrayList;
+
 public class GA {
 
     public static void main(String[] args) {
@@ -24,12 +26,13 @@ public class GA {
         population.initPopulation(order);
         Machines.initMachines(order);
         Parts.initParts(order);
-        while(population.generation<1){
+        while(population.generation<1000){
             population.computeFitness(order);
             population.select(order);
             population.cross();
             population.mutate();
             population.generation++;
+            System.out.println(population.generation);
         }
     }
 }
