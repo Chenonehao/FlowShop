@@ -37,15 +37,15 @@ public class InputReader {
                     line = bufferedReader.readLine();
                     temp = line.split("\\s+");
                     //assertEquals(2, temp.length);
-                    order.machineCount = Integer.valueOf(temp[0]);
-                    order.partCount = Integer.valueOf(temp[1]);
+                    order.machineCount = Integer.valueOf(temp[1]);
+                    order.partCount = Integer.valueOf(temp[0]);
                     //System.out.println(Order.machineCount + "  " + Order.partCount);
 
-                    for (int i = 0; i < order.machineCount; i++) {
+                    for (int i = 0; i < order.partCount; i++) {
                         ArrayList<Integer> list = new ArrayList<>();
                         line = bufferedReader.readLine();
                         temp = line.split("\\s+");
-                        for (int j = 1; j < 2 * order.partCount; j += 2) {
+                        for (int j = 1; j < 2 * order.machineCount; j += 2) {
                             list.add(Integer.valueOf(temp[j]));
                         }
                         //System.out.println(list);

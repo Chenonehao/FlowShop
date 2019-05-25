@@ -10,7 +10,10 @@ public class Machines {
     public static void initMachines(Order order) {
         machines.clear();
         for (int i = 0; i < order.machineCount; i++) {
-            machines.add(new Machine(i + 1, order.produceInfo.get(i)));
+            ArrayList<Integer> timeCost= new ArrayList<>();
+            for(int j=0;j<order.partCount;j++)
+                timeCost.add(order.produceInfo.get(j).get(i));
+            machines.add(new Machine(i + 1, timeCost));
         }
     }
 
