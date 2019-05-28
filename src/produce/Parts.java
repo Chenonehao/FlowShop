@@ -14,9 +14,10 @@ public class Parts {
         }
     }
 
-    public static void resetTime(){
+    public static void reset(){
         for(Part part: parts){
             part.finishTime=0;
+            part.processStage=0;
         }
     }
 }

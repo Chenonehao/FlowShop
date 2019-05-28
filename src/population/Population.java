@@ -20,6 +20,8 @@ public class Population {
 
     public double totalP;
 
+    public int nextGeneSize = 0;
+
     public boolean highMutate = false;
 
     public int mutateProb = 5;
@@ -48,10 +50,6 @@ public class Population {
             individuals.add(new Individual(order));
             nextGeneration.add(new Individual(order));
         }
-//        for(int j=0;j<1;j++){
-//            individuals.add(new Individual(order,1));
-//            nextGeneration.add(new Individual(order,1));
-//        }
     }
 
     /**
@@ -63,26 +61,31 @@ public class Population {
         totalP = 0;
         int averageTimeCost = 0;
         int minTimeConsume = Integer.MAX_VALUE;
+        int maxTimConsume = 0;
         bestIndex = 0;
         for (int i = 0; i < populationSize; i++) {
             Machines.resetTime();
-            Parts.resetTime();
+            Parts.reset();
             timeCost = individuals.get(i).calculateTimeCost(order);
             individuals.get(i).timeCost = timeCost;
             if (timeCost < minTimeConsume) {
                 minTimeConsume = timeCost;
                 bestIndex = i;
             }
+            if (timeCost > maxTimConsume)
+                maxTimConsume = timeCost;
             timeSum += timeCost;
         }
         averageTimeCost = timeSum / populationSize;
         for (int i = 0; i < populationSize; i++) {
-            individuals.get(i).selectProb = (1.0 / individuals.get(i).timeCost) * timeSum;
+            //individuals.get(i).selectProb = (1.0 / individuals.get(i).timeCost) * timeSum;
+            individuals.get(i).selectProb = maxTimConsume - individuals.get(i).timeCost + (averageTimeCost - individuals.get(i).timeCost);
+            if (individuals.get(i).selectProb <= 0) individuals.get(i).selectProb = 0;
             totalP += individuals.get(i).selectProb;
         }
 
-        if(bestIndividual==null){
-            bestIndividual=new Individual(order);
+        if (bestIndividual == null) {
+            bestIndividual = new Individual(order);
 
         }
         bestIndividual.updateGeneticInfo(individuals.get(bestIndex).geneticInfo);
@@ -96,23 +99,23 @@ public class Population {
             stagnantGeneration++;
             if (stagnantGeneration > 100) {
                 stagnant = true;
-                mutateProb = 100;
+                mutateProb = 80;
             }
         }
 
         System.out.println(minTimeConsume + "  avg  " + averageTimeCost);
-        System.out.println(individuals.get(bestIndex).geneticInfo);
+        //System.out.println(individuals.get(bestIndex).geneticInfo);
     }
 
     private void calculateTime() {
         for (int i = 0; i < populationSize; i++) {
             Machines.resetTime();
-            Parts.resetTime();
+            Parts.reset();
             individuals.get(i).timeCost = individuals.get(i).calculateTimeCost(order);
         }
         for (int i = 0; i < populationSize; i++) {
             Machines.resetTime();
-            Parts.resetTime();
+            Parts.reset();
             nextGeneration.get(i).timeCost = nextGeneration.get(i).calculateTimeCost(order);
         }
 
@@ -160,45 +163,17 @@ public class Population {
                 return o1.timeCost - o2.timeCost;
             }
         });
-//        Collections.sort(nextGeneration, new Comparator<Individual>() {
-//            public int compare(Individual o1, Individual o2) {
-//                return o2.timeCost - o1.timeCost;
-//            }
-//        });
-//        for (int i = populationSize - 1; i > 0; i--) {
-//            if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost) {
-//                individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-//            } else if (random.nextInt(100) < 5)
-//                individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-//        }
-
-        for (int i = populationSize - 1; i > populationSize-2; i--) {
-            if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost) {
-                individuals.get(i).updateGeneticInfo(bestIndividual.geneticInfo);
+        Collections.sort(nextGeneration, new Comparator<Individual>() {
+            public int compare(Individual o1, Individual o2) {
+                return o2.timeCost - o1.timeCost;
             }
+        });
+
+        for (int i = populationSize - 1; i > 50; i--) {
+            if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost)
+                individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
+            //individuals.get(i).updateGeneticInfo(bestIndividual.geneticInfo);
         }
-//        if(generation>8000){
-//            int i=1;
-//        }
-//
-//        if(individuals.get(0).timeCost<bestEver){
-//            bestEver = individuals.get(0).timeCost;
-//            stagnantGeneration = 0;
-//            mutateProb=5;
-//            stagnant=false;
-//        }else{
-//            stagnantGeneration++;
-//            if(stagnantGeneration>100) {
-//                stagnant = true;
-//                mutateProb=100;
-//            }
-//        }
-//
-//
-//
-//        for(int i=0;i<populationSize;i++){
-//
-//        }
 
 //        int sameCount=0;
 //
@@ -229,11 +204,8 @@ public class Population {
 
 
     public ArrayList<Integer> getTwoParent() {
-        int updateCount = 0;
-        int randomselect = 0;
         Random random = new Random();
         ArrayList<Integer> list = new ArrayList<>();
-
         int t = 2;
         while (t-- != 0) {
             int i = 0, j = 0;
@@ -247,8 +219,6 @@ public class Population {
         }
         if (list.get(0).equals(list.get(1))) list = getTwoParent();
         return list;
-        //switchGeneration();
-        //shuffle();
     }
 
     private void switchGeneration() {
@@ -263,18 +233,25 @@ public class Population {
 
     public void cross() {
         int i = 0, j = 0;
-        int CrossO, crossX;
+        int CrossO, CrossX;
         ArrayList<Integer> target;
+        target = getTwoParent();
+        CrossO = target.get(0);
+        CrossX = target.get(1);
         Random random = new Random();
-        for (i = 0; i < populationSize; i++) {
+        nextGeneSize = 0;
+        for (i = 0; i < populationSize / 2; i++) {
             if (random.nextInt(100) < 80) {
-                target = getTwoParent();
-                CrossO = target.get(0);
-                crossX = target.get(1);
-                crossOX(CrossO, crossX);
+                crossOX(CrossO, CrossX);
             } else {
-                nextGeneration.get(i).updateGeneticInfo(individuals.get(i).geneticInfo);
+                //todo add O X to next generation
+                nextGeneSize++;
+                nextGeneration.get(nextGeneSize - 1).updateGeneticInfo(individuals.get(CrossO).geneticInfo);
+                nextGeneSize++;
+                nextGeneration.get(nextGeneSize - 1).updateGeneticInfo(individuals.get(CrossX).geneticInfo);
+
             }
+
         }
 
     }
@@ -284,215 +261,208 @@ public class Population {
      */
     private void crossOX(int O, int X) {
         Random random = new Random();
-        ArrayList<Integer> crossPartO = new ArrayList<>();
-        ArrayList<Integer> crossPartX = new ArrayList<>();
+        ArrayList<Integer> resortO = new ArrayList<>();
+        ArrayList<Integer> resortX = new ArrayList<>();
+        int start, end;
+        start = random.nextInt(individuals.get(0).geneticInfo.size());
+        end = random.nextInt(individuals.get(0).geneticInfo.size());
+        if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+        }
+        if (start == end) return;
+        OXresort(start, end, O, resortO);
+        OXresort(start, end, X, resortX);
 
-        ArrayList<Integer> geneListO = new ArrayList<>();
-        ArrayList<Integer> geneListX = new ArrayList<>();
-        for (int i = 0; i < individuals.get(0).geneticInfo.size(); i++) {
-            int start = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-            int end = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-            if (start > end) {
-                int temp = start;
-                start = end;
-                end = temp;
-            }
+        OXremoveExist(start, end, X, resortO);
+        OXremoveExist(start, end, O, resortX);
 
-            crossPartO.clear();
-            crossPartX.clear();
-            geneListO.clear();
-            geneListX.clear();
+        OXreconstract(start, end, X, resortO);
+        OXreconstract(start, end, O, resortX);
 
-            for (int j = start; j <= end; j++) {
-                crossPartO.add(individuals.get(O).geneticInfo.get(i).get(j));
-                crossPartX.add(individuals.get(X).geneticInfo.get(i).get(j));
+    }
 
-                nextGeneration.get(O).geneticInfo.get(i).set(j, individuals.get(X).geneticInfo.get(i).get(j));
-                nextGeneration.get(X).geneticInfo.get(i).set(j, individuals.get(O).geneticInfo.get(i).get(j));
-            }
-
-
-            int t = 0;
-            //end+1  ------   length
-            for (t = end + 1; t < individuals.get(0).geneticInfo.get(0).size(); t++) {
-                if (!crossPartX.contains(individuals.get(O).geneticInfo.get(i).get(t))) {
-                    geneListO.add(individuals.get(O).geneticInfo.get(i).get(t));
-                }
-                if (!crossPartO.contains(individuals.get(X).geneticInfo.get(i).get(t))) {
-                    geneListX.add(individuals.get(X).geneticInfo.get(i).get(t));
-                }
-            }
-
-            // 0 ------ start
-            for (t = 0; t <= end; t++) {
-                if (!crossPartX.contains(individuals.get(O).geneticInfo.get(i).get(t))) {
-                    geneListO.add(individuals.get(O).geneticInfo.get(i).get(t));
-                }
-                if (!crossPartO.contains(individuals.get(X).geneticInfo.get(i).get(t))) {
-                    geneListX.add(individuals.get(X).geneticInfo.get(i).get(t));
-                }
-            }
-
-            int tmp = 0;
-
-            for (t = end + 1; t < individuals.get(0).geneticInfo.get(0).size(); t++) {
-                nextGeneration.get(O).geneticInfo.get(i).set(t, geneListO.get(tmp));
-                nextGeneration.get(X).geneticInfo.get(i).set(t, geneListX.get(tmp));
-                tmp++;
-            }
-
-            for (t = 0; t < start; t++) {
-                nextGeneration.get(O).geneticInfo.get(i).set(t, geneListO.get(tmp));
-                nextGeneration.get(X).geneticInfo.get(i).set(t, geneListX.get(tmp));
-                tmp++;
-            }
+    private void OXresort(int start, int end, int index, ArrayList<Integer> list) {
+        for (int i = end + 1; i < individuals.get(0).geneticInfo.size(); i++) {
+            list.add(individuals.get(index).geneticInfo.get(i));
+        }
+        for (int i = 0; i < end + 1; i++) {
+            list.add(individuals.get(index).geneticInfo.get(i));
         }
     }
+
+    private void OXremoveExist(int start, int end, int index, ArrayList<Integer> list) {
+        ArrayList<Integer> deleteList = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            int temp = individuals.get(index).geneticInfo.get(i);
+            int order = 0;
+            for (int j = 0; j <= i; j++) {
+                if (temp == individuals.get(index).geneticInfo.get(j)) order++;
+            }
+            for (int k = 0; k < list.size(); k++) {
+                if (list.get(k) == temp) order--;
+                if (order == 0) {
+                    deleteList.add(k);
+                    break;
+                }
+            }
+        }
+        Collections.sort(deleteList, new Comparator<Integer>() {
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+
+        for (int i = deleteList.size() - 1; i >= 0; i--) {
+            list.remove(deleteList.get(i).intValue());
+        }
+    }
+
+    private void OXreconstract(int start, int end, int index, ArrayList<Integer> list) {
+        nextGeneSize++;
+        int temp = nextGeneSize - 1;
+        int listIndex = 0;
+        for (int i = start; i <= end; i++) {
+            nextGeneration.get(temp).geneticInfo.set(i, individuals.get(index).geneticInfo.get(i));
+        }
+        for (int i = end + 1; i < individuals.get(0).geneticInfo.size(); i++) {
+            nextGeneration.get(temp).geneticInfo.set(i, list.get(listIndex));
+            listIndex++;
+        }
+        for (int i = 0; i < start; i++) {
+            nextGeneration.get(temp).geneticInfo.set(i, list.get(listIndex));
+            listIndex++;
+        }
+
+    }
+
 
     public void mutate() {
         Random random = new Random();
-        int start = 0, end = 0;
-        int target = 0;
+        if (stagnant) {
+            for (int i = 0; i < 3; i++) {
+                switch (random.nextInt(3)) {
+                    case 0:
+                        mutateWithEM();
+                        break;
+                    case 1:
+                        mutateWithIM();
+                        break;
+                    case 2:
+                        mutateWithDM();
+                        break;
+                }
+            }
+//            mutateWithEM();
+//            mutateWithEM();
+//            mutateWithEM();
+        } else
+            mutateWithEM();
+    }
+
+
+    /**
+     * Exchange Mutation
+     * 交换变异
+     * 交换染色体中两位置的基因
+     */
+    public void mutateWithEM() {
+        Random random = new Random();
+        int target1 = 0, target2 = 0;
         for (int i = 0; i < populationSize; i++) {
-            for (int j = 0; j < nextGeneration.get(0).geneticInfo.size(); j++) {
-                if (random.nextInt(100) < 5) {
-                    start = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size());
-                    end = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size());
-                    if (start > end) {
-                        int temp = end;
-                        end = start;
-                        start = temp;
-                    }
-                    if (nextGeneration.get(0).geneticInfo.get(0).size() != end - start + 1) {
-                        target = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size() - (end - start + 1));
-                        mutateDM(i, j, start, end, target);
-                    }
+            if (random.nextInt(100) < mutateProb) {
+                target1 = random.nextInt(individuals.get(0).geneticInfo.size());
+                target2 = random.nextInt(individuals.get(0).geneticInfo.size());
+                mutateEM(i, target1, target2);
+            }
+        }
+    }
+
+
+    public void mutateEM(int populationIndex, int target1, int target2) {
+        int temp = nextGeneration.get(populationIndex).geneticInfo.get(target1);
+        nextGeneration.get(populationIndex).geneticInfo.set(target1, nextGeneration.get(populationIndex).geneticInfo.get(target2));
+        nextGeneration.get(populationIndex).geneticInfo.set(target2, temp);
+    }
+
+    /**
+     * Insertion Mutation
+     * 插入变异
+     * 从染色体中选择一个基因，随机插入到另一个位置
+     */
+    public void mutateWithIM() {
+        Random random = new Random();
+        int start = 0, end = 0;
+        start = random.nextInt(individuals.get(0).geneticInfo.size());
+        end = random.nextInt(individuals.get(0).geneticInfo.size());
+        if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+        }
+        for (int i = 0; i < populationSize; i++) {
+            if (random.nextInt(100) < mutateProb) {
+                for (int j = end; j > start; j--) {
+                    mutateEM(i, j, j - 1);
                 }
             }
         }
-        //switchGeneration();
+
     }
 
-    public void mutateAll() {
+    /**
+     * Displacement Mutation
+     * 替换变异
+     * 随机选取一段，替换到随机的一个位置上
+     */
+    public void mutateWithDM() {
         Random random = new Random();
         int start = 0, end = 0;
         int target = 0;
         for (int i = 0; i < populationSize; i++) {
-            if (random.nextInt(100) < 5) {
-
-                start = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size());
-                end = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size());
+            if (random.nextInt(100) < mutateProb) {
+                start = random.nextInt(nextGeneration.get(0).geneticInfo.size());
+                end = random.nextInt(nextGeneration.get(0).geneticInfo.size());
                 if (start > end) {
                     int temp = end;
                     end = start;
                     start = temp;
                 }
-                if (nextGeneration.get(0).geneticInfo.get(0).size() != end - start + 1) {
-                    target = random.nextInt(nextGeneration.get(0).geneticInfo.get(0).size() - (end - start + 1));
-                    for (int j = 0; j < nextGeneration.get(0).geneticInfo.size(); j++) {
-                        mutateDM(i, j, start, end, target);
-                    }
+                if (nextGeneration.get(0).geneticInfo.size() != end - start + 1) {
+                    target = random.nextInt(nextGeneration.get(0).geneticInfo.size() - (end - start + 1));
+                    mutateDM(i, start, end, target);
                 }
-            }
-        }
-        //switchGeneration();
-    }
 
-    public void mutateWithEM() {
-        Random random = new Random();
-        int target1 = 0, target2 = 0;
 
-        for (int i = 0; i < populationSize; i++) {
-            int j = random.nextInt(individuals.get(0).geneticInfo.size());
-            if (random.nextInt(100) < mutateProb) {
-                target1 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                target2 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                mutateEM(i, j, target1, target2);
-            }
-
-        }
-    }
-
-    public void mutateWithEMAll() {
-        Random random = new Random();
-        int target1 = 0, target2 = 0;
-
-        for (int i = 0; i < populationSize; i++) {
-            if (random.nextInt(100) < 5) {
-                target1 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                target2 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                for (int j = 0; j < individuals.get(0).geneticInfo.size(); j++) {
-                    mutateEM(i, j, target1, target2);
-                }
             }
         }
     }
 
-
-    public void mutateEM(int populationIndex, int geneIndex, int target1, int target2) {
-
-        int temp = nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(target1);
-        nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(target1, nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(target2));
-        nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(target2, temp);
-
-    }
-
-    public void mutateWithEM2() {
-        Random random = new Random();
-        int target1 = 0, target2 = 0;
-
-        for (int i = 0; i < populationSize; i++) {
-            for (int j = 0; j < individuals.get(0).geneticInfo.size(); j++) {
-                if (random.nextInt(100) < 20) {
-                    target1 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                    target2 = random.nextInt(individuals.get(0).geneticInfo.get(0).size());
-                    mutateEM(i, j, target1, target2);
-                }
-            }
-        }
-    }
-
-    public void mutateEM2(int populationIndex, int geneIndex, int target1, int target2) {
-        int start, end;
-        if (target1 > target2) {
-            start = target2;
-            end = target1;
-        } else {
-            start = target1;
-            end = target2;
-        }
-        for (int i = start; i < end; i++) {
-            int temp = nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(i);
-            nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(i, nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(i + 1));
-            nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(i + 1, temp);
-        }
-    }
-
-
-    private void mutateDM(int populationIndex, int geneIndex, int start, int end, int target) {
+    private void mutateDM(int populationIndex, int start, int end, int target) {
         ArrayList<Integer> origList = new ArrayList<>();
         ArrayList<Integer> origLeft = new ArrayList<>();
-        for (int i = 0; i < nextGeneration.get(0).geneticInfo.get(0).size(); i++) {
-            origList.add(nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(i));
+        for (int i = 0; i < nextGeneration.get(0).geneticInfo.size(); i++) {
+            origList.add(nextGeneration.get(populationIndex).geneticInfo.get(i));
         }
 
         for (int i = 0; i < start; i++) {
-            origLeft.add(nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(i));
+            origLeft.add(nextGeneration.get(populationIndex).geneticInfo.get(i));
         }
-        for (int i = end + 1; i < nextGeneration.get(0).geneticInfo.get(0).size(); i++) {
-            origLeft.add(nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).get(i));
+        for (int i = end + 1; i < nextGeneration.get(0).geneticInfo.size(); i++) {
+            origLeft.add(nextGeneration.get(populationIndex).geneticInfo.get(i));
         }
 
         int j = 0;
         int k = 0;
-        for (int i = 0; i < nextGeneration.get(0).geneticInfo.get(0).size(); i++) {
+        for (int i = 0; i < nextGeneration.get(0).geneticInfo.size(); i++) {
             if (i < target)
-                nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(i, origLeft.get(i));
+                nextGeneration.get(populationIndex).geneticInfo.set(i, origLeft.get(i));
             else if (i < target + end - start + 1) {
-                nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(i, origList.get(j + start));
+                nextGeneration.get(populationIndex).geneticInfo.set(i, origList.get(j + start));
                 j++;
             } else {
-                nextGeneration.get(populationIndex).geneticInfo.get(geneIndex).set(i, origLeft.get(k + target));
+                nextGeneration.get(populationIndex).geneticInfo.set(i, origLeft.get(k + target));
                 k++;
             }
 

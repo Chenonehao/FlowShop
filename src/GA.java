@@ -32,7 +32,7 @@ public class GA {
             population.computeFitness();
             population.select();
             population.cross();
-            //population.mutate();
+            population.mutate();
             //population.mutateAll();
 
             //population.mutateWithEM2();
@@ -57,7 +57,7 @@ public class GA {
 //                }
 //
 //            }else{
-                population.mutateWithEM();
+                //population.mutateWithEM();
             //}
 
             population.update();
