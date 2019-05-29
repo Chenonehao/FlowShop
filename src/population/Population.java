@@ -1,9 +1,10 @@
 package population;
 
+import IOUtil.OutputWriter;
 import order.Order;
 import produce.Machines;
 import produce.Parts;
-import IOUtil.OutputWriter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,19 +94,19 @@ public class Population {
         if (minTimeConsume < bestEver) {
             bestEver = minTimeConsume;
             stagnantGeneration = 0;
-            mutateProb = 5;
+            mutateProb = 3;
             stagnant = false;
-            OutputWriter.writeFile(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver+" in generation "+generation);
+            OutputWriter.writeFile("bestever    " + bestEver + "    in generation " + generation);
 
         } else {
             stagnantGeneration++;
             if (stagnantGeneration > 100) {
                 stagnant = true;
-                mutateProb = 80;
+                mutateProb = 50;
             }
         }
 
-        System.out.println(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver);
+        //System.out.println(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver);
         //System.out.println(individuals.get(bestIndex).geneticInfo);
     }
 
@@ -147,10 +148,14 @@ public class Population {
     private int selectOne() {
         int temp = 0;
         Random random = new Random();
-        temp = random.nextInt((int) (totalP * 100));
-        for (int i = 0; i < populationSize; i++) {
-            temp -= individuals.get(i).selectProb * 100;
-            if (temp <= 0) return i;
+        if (totalP > 0) {
+            temp = random.nextInt((int) (totalP * 100));
+            for (int i = 0; i < populationSize; i++) {
+                temp -= individuals.get(i).selectProb * 100;
+                if (temp <= 0) return i;
+            }
+        } else {
+            return random.nextInt(100);
         }
         return -1;
     }

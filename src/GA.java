@@ -12,8 +12,8 @@ public class GA {
 
     public static void main(String[] args) {
         readFile("input");
-        OutputWriter.init();
         for(Order order : Orders.orders){
+            OutputWriter.init(order);
             evolve(order);
             order.process();
         }
@@ -28,6 +28,7 @@ public class GA {
         population.initPopulation();
         Machines.initMachines(order);
         Parts.initParts(order);
+        System.out.println("in order "+ order.instanceName);
         while(population.generation<100000){
             population.computeFitness();
             population.select();
@@ -35,7 +36,8 @@ public class GA {
             population.mutate();
             population.update();
             population.generation++;
-            System.out.println(population.generation);
+            //System.out.println(population.generation);
         }
+
     }
 }

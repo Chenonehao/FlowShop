@@ -11,9 +11,9 @@ public class InputReader {
     public static void readFile(String filepath) {
         File file = new File(filepath);
         if (!file.isDirectory()) {
-            System.out.println("path=" + file.getPath());
-            System.out.println("absolutepath=" + file.getAbsolutePath());
-            System.out.println("name=" + file.getName());
+//            System.out.println("path=" + file.getPath());
+//            System.out.println("absolutepath=" + file.getAbsolutePath());
+//            System.out.println("name=" + file.getName());
             extractProduceInfo(file);
         }else if (file.isDirectory()) {
             String[] fileList = file.list();
@@ -36,10 +36,8 @@ public class InputReader {
                     order.instanceName = line;
                     line = bufferedReader.readLine();
                     temp = line.split("\\s+");
-                    //assertEquals(2, temp.length);
                     order.machineCount = Integer.valueOf(temp[1]);
                     order.partCount = Integer.valueOf(temp[0]);
-                    //System.out.println(Order.machineCount + "  " + Order.partCount);
 
                     for (int i = 0; i < order.partCount; i++) {
                         ArrayList<Integer> list = new ArrayList<>();
@@ -48,7 +46,6 @@ public class InputReader {
                         for (int j = 1; j < 2 * order.machineCount; j += 2) {
                             list.add(Integer.valueOf(temp[j]));
                         }
-                        //System.out.println(list);
                         order.produceInfo.add(list);
                     }
                     Orders.orders.add(order);

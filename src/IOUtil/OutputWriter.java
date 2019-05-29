@@ -1,5 +1,7 @@
 package IOUtil;
 
+import order.Order;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,8 +11,8 @@ public class OutputWriter {
     static File writeName;
     static BufferedWriter out;
 
-    public static void init() {
-        writeName = new File("output\\output.txt"); // 相对路径，如果没有则要建立一个新的output.txt文件
+    public static void init(Order order) {
+        writeName = new File("output\\outputOf"+order.instanceName+".txt"); // 相对路径，如果没有则要建立一个新的output.txt文件
         try {
             writeName.createNewFile(); // 创建新文件,有同名的文件的话直接覆盖
             FileWriter writer = new FileWriter(writeName);
