@@ -3,7 +3,7 @@ package population;
 import order.Order;
 import produce.Machines;
 import produce.Parts;
-
+import IOUtil.OutputWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,6 +95,8 @@ public class Population {
             stagnantGeneration = 0;
             mutateProb = 5;
             stagnant = false;
+            OutputWriter.writeFile(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver+" in generation "+generation);
+
         } else {
             stagnantGeneration++;
             if (stagnantGeneration > 100) {
@@ -103,7 +105,7 @@ public class Population {
             }
         }
 
-        System.out.println(minTimeConsume + "  avg  " + averageTimeCost);
+        System.out.println(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver);
         //System.out.println(individuals.get(bestIndex).geneticInfo);
     }
 
@@ -173,33 +175,8 @@ public class Population {
             if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost)
                 individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
             //individuals.get(i).updateGeneticInfo(bestIndividual.geneticInfo);
+
         }
-
-//        int sameCount=0;
-//
-//        for(int i=1;i<populationSize;i++){
-//            if(individuals.get(i).timeCost==individuals.get(i-1).timeCost)sameCount++;
-//        }
-//
-//        if(sameCount<80) {
-//            highMutate=false;
-//            mutateProb = 5;
-//            for (int i = populationSize - 1; i > 0; i--) {
-//                if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost) {
-//                    individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-//                }
-////                else if (random.nextInt(100) < 5)
-////                    individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-//            }
-//        }else{
-//            highMutate=true;
-//            mutateProb =100;
-//            for(int i =2;i<populationSize;i++){
-//                if(individuals.get(i).timeCost==individuals.get(i-2).timeCost)
-//                    individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-//            }
-//        }
-
     }
 
 
@@ -249,11 +226,8 @@ public class Population {
                 nextGeneration.get(nextGeneSize - 1).updateGeneticInfo(individuals.get(CrossO).geneticInfo);
                 nextGeneSize++;
                 nextGeneration.get(nextGeneSize - 1).updateGeneticInfo(individuals.get(CrossX).geneticInfo);
-
             }
-
         }
-
     }
 
     /**
@@ -355,8 +329,8 @@ public class Population {
                 }
             }
 //            mutateWithEM();
-//            mutateWithEM();
-//            mutateWithEM();
+////            mutateWithEM();
+////            mutateWithEM();
         } else
             mutateWithEM();
     }
