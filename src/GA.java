@@ -5,9 +5,6 @@ import population.Population;
 import produce.Machines;
 import produce.Parts;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 public class GA {
 
     public static void main(String[] args) {

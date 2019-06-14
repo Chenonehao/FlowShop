@@ -25,6 +25,8 @@ public class Population {
 
     public boolean highMutate = false;
 
+    public boolean syncMode = true;
+
     public int mutateProb = 5;
 
     public boolean stagnant = false;
@@ -97,7 +99,7 @@ public class Population {
             mutateProb = 3;
             stagnant = false;
             OutputWriter.writeFile("bestever    " + bestEver + "    in generation " + generation);
-
+            OutputWriter.writeFile(bestIndividual.geneticInfo.toString());
         } else {
             stagnantGeneration++;
             if (stagnantGeneration > 100) {
@@ -106,8 +108,7 @@ public class Population {
             }
         }
 
-        //System.out.println(minTimeConsume + "  avg  " + averageTimeCost+ "   bestever   "+ bestEver);
-        //System.out.println(individuals.get(bestIndex).geneticInfo);
+        System.out.println(minTimeConsume + "  avg  " + averageTimeCost + "   bestever   " + bestEver);
     }
 
     private void calculateTime() {
@@ -142,7 +143,6 @@ public class Population {
 
     /**
      * 使用轮盘赌在当前代中选择一个个体
-     *
      * @return 下标
      */
     private int selectOne() {
@@ -176,11 +176,14 @@ public class Population {
             }
         });
 
-        for (int i = populationSize - 1; i > 50; i--) {
+        for (int i = populationSize - 1; i > populationSize - 5; i--) {
             if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost)
                 individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
-            //individuals.get(i).updateGeneticInfo(bestIndividual.geneticInfo);
-
+        }
+        if (stagnant) {
+            for (int i = populationSize - 5; i > populationSize - 20; i--) {
+                individuals.get(populationSize - 1).updateGeneticInfo(bestIndividual.geneticInfo);
+            }
         }
     }
 
@@ -320,22 +323,22 @@ public class Population {
     public void mutate() {
         Random random = new Random();
         if (stagnant) {
-            for (int i = 0; i < 3; i++) {
-                switch (random.nextInt(3)) {
-                    case 0:
-                        mutateWithEM();
-                        break;
-                    case 1:
-                        mutateWithIM();
-                        break;
-                    case 2:
-                        mutateWithDM();
-                        break;
+            if (random.nextInt(100) < 5)
+                for (int i = 0; i < 3; i++) {
+                    switch (random.nextInt(3)) {
+                        case 0:
+                            mutateWithEM();
+                            break;
+                        case 1:
+                            mutateWithIM();
+                            break;
+                        case 2:
+                            mutateWithDM();
+                            break;
+                    }
                 }
-            }
-//            mutateWithEM();
-////            mutateWithEM();
-////            mutateWithEM();
+            else
+                mutateWithSO();
         } else
             mutateWithEM();
     }
@@ -448,4 +451,27 @@ public class Population {
         }
 
     }
+
+    /**
+     * Specific Operate
+     * 将随机一个工序的加工序列提前或者推迟
+     */
+    public void mutateWithSO() {
+        Random random = new Random();
+        int index = 0, movement = 0;
+        for (int i = 0; i < populationSize; i++) {
+            if (random.nextInt(100) < mutateProb) {
+                index = random.nextInt(order.partCount);
+                movement = random.nextInt(order.partCount) - random.nextInt(order.partCount);
+                if (random.nextInt(100) < 80)
+                    movement /= 3;
+                mutateSO(i, index, movement);
+            }
+        }
+    }
+
+    public void mutateSO(int populationIndex, int index, int movement) {
+        nextGeneration.get(populationIndex).specificOp(index, movement);
+    }
+
 }
