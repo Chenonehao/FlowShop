@@ -25,12 +25,40 @@ public class Individual {
     public double selectProb;
 
     public Individual(Order order) {
-        //geneticInfo= new ArrayList<>();
         for (int i = 0; i < order.partCount; i++) {
-            for (int j = 0; j < order.machineCount; j++)
+            for (int j = 0; j < order.machineCount; j++) {
                 geneticInfo.add(i + 1);
+            }
         }
         Collections.shuffle(geneticInfo);
+
+        for (int i = 0; i < order.machineCount; i++)
+            machineStage.add(0);
+        for (int i = 0; i < order.partCount; i++)
+            partStage.add(0);
+
+        for (int i = 0; i < order.machineCount; i++) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int j = 0; j < order.partCount; j++)
+                list.add(0);
+            processInfo.add(list);
+        }
+    }
+
+    public Individual(Order order, boolean isSync) {
+        for (int i = 0; i < order.partCount; i++)
+            geneticInfo.add(i + 1);
+        Collections.shuffle(geneticInfo);
+        for (int i = 1; i < order.machineCount; i++)
+            for (int j = 0; j < order.partCount; j++) {
+                geneticInfo.add(geneticInfo.get(j));
+            }
+
+//        for (int i = 0; i < order.partCount; i++) {
+//            for (int j = 0; j < order.machineCount; j++)
+//                geneticInfo.add(i + 1);
+//        }
+//        Collections.shuffle(geneticInfo);
 
         for (int i = 0; i < order.machineCount; i++)
             machineStage.add(0);
@@ -49,14 +77,12 @@ public class Individual {
         for (int i = 0; i < order.machineCount * order.partCount; i++) {
             ArrayList<Integer> list = new ArrayList<>(order.partCount);
         }
-
     }
 
 
     public void updateGeneticInfo(ArrayList<Integer> newGene) {
         for (int i = 0; i < geneticInfo.size(); i++)
             geneticInfo.set(i, newGene.get(i));
-
     }
 
     public int calculateTimeCost(Order order) {
@@ -102,27 +128,27 @@ public class Individual {
         for (int i = 0; i < processInfo.size(); i++) {
             int index = processInfo.get(i).indexOf(partID + 1);
             //if (random.nextInt(100) < 90)
-                if (movement > 0) {
-                    if (index + movement >= processInfo.get(i).size()) {
-                        for (int j = index; j < processInfo.get(i).size() - 1; j++) {
-                            swamp(i, j, j + 1);
-                        }
-                    } else {
-                        for (int j = index; j < index + movement; j++) {
-                            swamp(i, j, j + 1);
-                        }
+            if (movement > 0) {
+                if (index + movement >= processInfo.get(i).size()) {
+                    for (int j = index; j < processInfo.get(i).size() - 1; j++) {
+                        swamp(i, j, j + 1);
                     }
-                } else if (movement < 0) {
-                    if (index + movement < 0) {
-                        for (int j = index; j > 0; j--) {
-                            swamp(i, j, j - 1);
-                        }
-                    } else {
-                        for (int j = index; j > index + movement; j--) {
-                            swamp(i, j, j - 1);
-                        }
+                } else {
+                    for (int j = index; j < index + movement; j++) {
+                        swamp(i, j, j + 1);
                     }
                 }
+            } else if (movement < 0) {
+                if (index + movement < 0) {
+                    for (int j = index; j > 0; j--) {
+                        swamp(i, j, j - 1);
+                    }
+                } else {
+                    for (int j = index; j > index + movement; j--) {
+                        swamp(i, j, j - 1);
+                    }
+                }
+            }
         }
         encodeGene();
     }

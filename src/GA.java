@@ -26,7 +26,7 @@ public class GA {
         Machines.initMachines(order);
         Parts.initParts(order);
         System.out.println("in order "+ order.instanceName);
-        while(population.generation<100000){
+        while(population.generation<10000){
             population.computeFitness();
             population.select();
             population.cross();

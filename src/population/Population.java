@@ -29,6 +29,8 @@ public class Population {
 
     public int mutateProb = 5;
 
+    public int crossoverProb = 80; //60
+
     public boolean stagnant = false;
 
     public int stagnantGeneration = 0;
@@ -41,6 +43,8 @@ public class Population {
 
     public int generation;
 
+
+
     public Population(int populationSize, int generation, Order order) {
         this.populationSize = populationSize;
         this.generation = generation;
@@ -50,8 +54,8 @@ public class Population {
 
     public void initPopulation() {
         for (int i = 0; i < populationSize; i++) {
-            individuals.add(new Individual(order));
-            nextGeneration.add(new Individual(order));
+            individuals.add(new Individual(order, true));
+            nextGeneration.add(new Individual(order, true));
         }
     }
 
@@ -89,10 +93,15 @@ public class Population {
 
         if (bestIndividual == null) {
             bestIndividual = new Individual(order);
-
         }
         bestIndividual.updateGeneticInfo(individuals.get(bestIndex).geneticInfo);
 
+        updateEvolveStatus(minTimeConsume);
+
+        System.out.println(minTimeConsume + "  avg  " + averageTimeCost + "   bestever   " + bestEver);
+    }
+
+    private void updateEvolveStatus(int minTimeConsume) {
         if (minTimeConsume < bestEver) {
             bestEver = minTimeConsume;
             stagnantGeneration = 0;
@@ -104,11 +113,9 @@ public class Population {
             stagnantGeneration++;
             if (stagnantGeneration > 100) {
                 stagnant = true;
-                mutateProb = 50;
+                mutateProb = 70;
             }
         }
-
-        System.out.println(minTimeConsume + "  avg  " + averageTimeCost + "   bestever   " + bestEver);
     }
 
     private void calculateTime() {
@@ -143,6 +150,7 @@ public class Population {
 
     /**
      * 使用轮盘赌在当前代中选择一个个体
+     *
      * @return 下标
      */
     private int selectOne() {
@@ -226,7 +234,7 @@ public class Population {
         Random random = new Random();
         nextGeneSize = 0;
         for (i = 0; i < populationSize / 2; i++) {
-            if (random.nextInt(100) < 80) {
+            if (random.nextInt(100) < crossoverProb) {
                 crossOX(CrossO, CrossX);
             } else {
                 //todo add O X to next generation

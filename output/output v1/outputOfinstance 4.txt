@@ -1,48 +1,24 @@
-bestever    12138    in generation 0
-bestever    11891    in generation 3
-bestever    11793    in generation 5
-bestever    11546    in generation 6
-bestever    10995    in generation 7
-bestever    10871    in generation 8
-bestever    10624    in generation 9
-bestever    10463    in generation 12
-bestever    10198    in generation 13
-bestever    10189    in generation 23
-bestever    9982    in generation 140
-bestever    9923    in generation 263
-bestever    9906    in generation 274
-bestever    9799    in generation 277
-bestever    9763    in generation 283
-bestever    9648    in generation 388
-bestever    9575    in generation 426
-bestever    9554    in generation 461
-bestever    9435    in generation 583
-bestever    9328    in generation 592
-bestever    9257    in generation 638
-bestever    9221    in generation 937
-bestever    9210    in generation 3526
-bestever    9114    in generation 3612
-bestever    9113    in generation 3999
-bestever    9043    in generation 4016
-bestever    9031    in generation 4038
-bestever    8856    in generation 4048
-bestever    8840    in generation 4971
-bestever    8831    in generation 5018
-bestever    8798    in generation 5021
-bestever    8618    in generation 5029
-bestever    8575    in generation 13754
-bestever    8574    in generation 15583
-bestever    8517    in generation 15938
-bestever    8510    in generation 16090
-bestever    8495    in generation 16134
-bestever    8431    in generation 16479
-bestever    8374    in generation 16585
-bestever    8363    in generation 17719
-bestever    8339    in generation 17923
-bestever    8198    in generation 17926
-bestever    8128    in generation 18828
-bestever    8055    in generation 18834
-bestever    8051    in generation 18900
-bestever    8008    in generation 19008
-bestever    8004    in generation 20840
-bestever    8003    in generation 20947
+bestever    8668    in generation 0
+[14, 13, 4, 5, 12, 1, 8, 6, 11, 7, 2, 10, 9, 3, 14, 13, 4, 5, 12, 1, 8, 6, 11, 7, 2, 10, 9, 3, 14, 13, 4, 5, 12, 1, 8, 6, 11, 7, 2, 10, 9, 3, 14, 13, 4, 5, 12, 1, 8, 6, 11, 7, 2, 10, 9, 3]
+bestever    8637    in generation 102
+[8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 3, 9, 8, 14, 13, 4, 5, 12, 1, 6, 2, 11, 7, 10, 3, 9]
+bestever    8601    in generation 111
+[14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 8, 14, 13, 4, 5, 12, 1, 7, 6, 11, 2, 3, 10, 3, 9, 9, 8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 3, 9, 8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8]
+bestever    8547    in generation 121
+[14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 14, 13, 3, 9, 4, 5, 12, 1, 6, 11, 7, 2, 10, 3, 8, 9, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 3, 8, 9, 8, 14, 13, 4, 5, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8]
+bestever    8423    in generation 230
+[13, 4, 5, 12, 14, 1, 6, 11, 7, 2, 10, 9, 3, 8, 13, 4, 5, 12, 14, 1, 7, 6, 11, 2, 10, 9, 3, 8, 13, 4, 5, 12, 14, 1, 6, 11, 7, 2, 10, 9, 3, 8, 13, 4, 5, 12, 14, 1, 6, 11, 7, 2, 10, 9, 8, 3]
+bestever    8171    in generation 333
+[4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 7, 2, 10, 9, 3, 8]
+bestever    8167    in generation 441
+[4, 13, 5, 14, 12, 6, 1, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 14, 12, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 14, 12, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 14, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8]
+bestever    8139    in generation 442
+[4, 13, 5, 14, 12, 4, 13, 5, 14, 12, 1, 6, 11, 2, 7, 10, 9, 3, 8, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 14, 12, 1, 6, 11, 7, 2, 10, 9, 3, 8]
+bestever    8129    in generation 460
+[4, 13, 5, 14, 12, 4, 13, 5, 14, 12, 1, 6, 11, 2, 7, 10, 9, 3, 8, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8, 4, 13, 5, 12, 14, 1, 6, 11, 2, 7, 10, 9, 3, 8]
+bestever    8124    in generation 874
+[4, 14, 13, 6, 5, 12, 10, 7, 1, 3, 8, 2, 11, 9, 4, 14, 13, 6, 12, 5, 10, 7, 1, 3, 8, 2, 11, 9, 4, 14, 13, 6, 5, 12, 10, 7, 1, 3, 8, 2, 11, 9, 4, 14, 13, 6, 5, 12, 10, 7, 1, 3, 2, 8, 11, 9]
+bestever    8008    in generation 978
+[4, 14, 13, 6, 12, 5, 10, 7, 1, 9, 3, 8, 2, 11, 4, 14, 13, 6, 12, 5, 10, 7, 1, 9, 3, 8, 2, 11, 4, 14, 13, 6, 5, 12, 10, 7, 1, 9, 3, 8, 2, 11, 4, 14, 13, 6, 5, 12, 10, 7, 1, 9, 3, 8, 2, 11]
+bestever    8003    in generation 1422
+[4, 14, 12, 13, 5, 10, 7, 6, 1, 8, 9, 3, 2, 11, 4, 14, 12, 13, 5, 10, 7, 6, 1, 8, 9, 3, 11, 2, 4, 14, 12, 13, 5, 10, 7, 6, 1, 8, 9, 3, 11, 2, 4, 14, 12, 13, 10, 5, 7, 6, 1, 8, 9, 3, 11, 2]
