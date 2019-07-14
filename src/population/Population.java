@@ -111,7 +111,7 @@ public class Population {
             OutputWriter.writeFile(bestIndividual.geneticInfo.toString());
         } else {
             stagnantGeneration++;
-            if (stagnantGeneration > 100) {
+            if (stagnantGeneration > 10) {
                 stagnant = true;
                 mutateProb = 70;
             }
@@ -184,12 +184,12 @@ public class Population {
             }
         });
 
-        for (int i = populationSize - 1; i > populationSize - 5; i--) {
+        for (int i = populationSize - 1; i > populationSize - 0.05*populationSize; i--) {
             if (nextGeneration.get(i).timeCost < individuals.get(i).timeCost)
                 individuals.get(i).updateGeneticInfo(nextGeneration.get(i).geneticInfo);
         }
         if (stagnant) {
-            for (int i = populationSize - 5; i > populationSize - 20; i--) {
+            for (int i = populationSize - (int)(0.05*populationSize); i > populationSize - 0.20*populationSize; i--) {
                 individuals.get(populationSize - 1).updateGeneticInfo(bestIndividual.geneticInfo);
             }
         }

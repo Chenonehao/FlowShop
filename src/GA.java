@@ -21,18 +21,19 @@ public class GA {
     }
 
     public static void evolve(Order order){
-        Population population = new Population(100, 0,order);
+        Population population = new Population(500, 0,order);
         population.initPopulation();
         Machines.initMachines(order);
         Parts.initParts(order);
         System.out.println("in order "+ order.instanceName);
-        while(population.generation<10000){
+        while(population.generation<100000){
             population.computeFitness();
             population.select();
             population.cross();
             population.mutate();
             population.update();
             population.generation++;
+            if(population.stagnantGeneration>5000)break;
             //System.out.println(population.generation);
         }
 
